@@ -4,10 +4,9 @@ from ...Helpers.Constants.interface import *
 class ProductInterface():
 
     def __init__(self, color, image=None):
-        self.image = image
+        self.image = pygame.image.load(IMAGE_PATH + image)
         self.color = color
 
     def draw(self, screen, position):
-        pygame.draw.rect(screen, self.color, (position.x, position.y, position.width, position.height))
-
-        pygame.draw.rect(screen, BLACK, (position.x, position.y, position.width, position.height),1)
+        scaled_image = pygame.transform.scale(self.image, (position.width, position.height))
+        screen.blit(scaled_image, (position.x, position.y))

@@ -13,6 +13,16 @@ class ShelfInterface():
         self.vertical = False
         self.editor = False
         self.editing = False
+        self.cells = self.get_cells()
+
+    def get_cells(self):
+        position = self.position
+        i = position.x // GRID_CELL_SIZE
+        j = position.y // GRID_CELL_SIZE
+
+        cells = [[i, j],[i+1, j],[i+2, j], [i+3, j]
+                 ,[i, j+1],[i+1, j+1],[i+2, j+1], [i+3, j+1]]
+        return cells
 
     def draw(self, screen, button_clicked, mouse_pos, product, amount):
         self.draw_shelf(screen, button_clicked, mouse_pos)
@@ -28,8 +38,10 @@ class ShelfInterface():
         pygame.draw.rect(screen, color, (self.position.x, self.position.y, width, height))
 
     def update_position(self, x, y):
-        self.position.x = x
-        self.position.y = y
+        self.position.x = x - (x % GRID_CELL_SIZE)
+        self.position.y = y - (y % GRID_CELL_SIZE)
+
+        self.cells = self.get_cells()
 
     def orientation(self, vertical):
         self.vertical = vertical

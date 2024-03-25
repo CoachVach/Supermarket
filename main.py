@@ -17,10 +17,13 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(GAME_TITLE)
 
-player = Player()
+
 interface_objects = InterfaceObjects(screen)
 store_interface = load_store_interface(interface_objects)
 interface_objects = load_interface_objects(interface_objects)
+matrix = create_matrix(interface_objects.shelves)
+player = Player(matrix)
+customers = load_customers(matrix, store_interface.supermarket)
 
 tablet = True
 store = False
@@ -50,19 +53,28 @@ while running:
             store, tablet, editor = tablet_interface(screen, button_clicked, mouse_pos, interface_objects)
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
             if editor: 
-                shelves_editor_mode(interface_objects.shelves)
+                shelves_editor_mode(interface_objects.shelves, editor)
         
     else:
         if editor:
             interface_objects.draw(mouse_pos, button_clicked)
-            editing_shelf, interface_objects.shelves, editor = editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf)
+            editing_shelf, interface_objects.shelves, editor, matrix = editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf, matrix)
+            if not editor:
+                for customer in customers:
+                    customer.path_finder.update_matrix(matrix)
 
         else:
-            player.move(interface_objects.shelves)
-
             screen.fill(WHITE) ###################################################
+            
+            if button_clicked:
+                player.path_finder.create_path((mouse_pos[0], mouse_pos[1]), screen)
+            player.path_finder.update(screen, (mouse_pos[0], mouse_pos[1]))
 
             interface_objects.draw(mouse_pos, button_clicked)
+
+            for customer in customers:
+                customer.path_finder.update(screen, (mouse_pos[0], mouse_pos[1]), interface_objects)
+                customer.draw(screen)
  
             player.draw(screen)
 
@@ -72,6 +84,9 @@ while running:
                 player.get_product(interface_objects.boxes)
             elif keys[pygame.K_b] and player.carrying_product != None:
                 player.re_stock(interface_objects.shelves)
+            elif keys[pygame.K_v]:
+                for customer in customers:
+                    customer.in_store = True
 
             display_text(screen, f"${store_interface.supermarket.money}", WHITE, (20,20))
 

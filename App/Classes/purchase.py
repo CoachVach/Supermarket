@@ -15,7 +15,7 @@ class Purchase:
 
     def total_cost(self):
         total = 0
-        for p in products:
+        for p in self.products:
             total += p[0].price * p[1]
         
         return total
@@ -31,7 +31,7 @@ class Purchase:
         max_products_reached = self.amount_products() >= MAX_PRODUCTS
         max_unique_products_reached = self.amount_unique_products() >= MAX_UNIQUE_PRODUCTS
 
-        return (not max_products_reached) and (not max_products_reached)
+        return (not max_products_reached) and (not max_unique_products_reached)
 
     def __str__(self):
 

@@ -1,28 +1,39 @@
 import pygame
+
+from App.Helpers.collision_helper import object_collision
+from App.Helpers.path_finder import Pathfinder
 from .position import Position
 
 from ..Helpers.Constants.logic import *
 from ..Helpers.Constants.interface import *
 
-
 class Player:
 
-    def __init__(self, name="Erik", carrying_product=None):
+    def __init__(self, matrix,  name="Erik", carrying_product=None):
         self.name = name
-        self.position = Position(width=20,height=50)
+        self.position = Position(width=PLAYER_WIDTH,height=PLAYER_HEIGHT)
         self.carrying_product = carrying_product
         self.carrying_amount = 0
         self.capacity = PLAYER_CAPACITY
 
+        self.path_finder = Pathfinder(matrix, self)
+
+        self.speed = PLAYER_VEL
+        self.pos = self.position.rect().center
+        self.direction = pygame.math.Vector2(0,0)
+        self.path = []
+        self.collision_rects = []
+        self.empty_path = []
+
     def get_product(self, boxes):
-        boxes = self.object_collision(boxes, self.augmented_rect())
+        boxes = object_collision(boxes, self.augmented_rect())
 
         if boxes != []:
             box = boxes[0]
             self.carrying_product, self.carrying_amount = box.get_product(self.capacity)
 
     def re_stock(self, shelves):
-        shelves = self.object_collision(shelves, self.augmented_rect())
+        shelves = object_collision(shelves, self.augmented_rect())
 
         for shelf in shelves:
 
@@ -33,50 +44,50 @@ class Player:
                     self.carrying_product = None
 
                 break
-        
-    def move_left(self, shelves):
-        if self.position.x >= MAP_OFFSET:
-            self.position.x -= PLAYER_VEL
-            if self.object_collision(shelves, self.position.rect()) != []:
-                self.position.x += PLAYER_VEL
 
-    def move_right(self, shelves):
-        if self.position.x + self.position.width <= SCREEN_WIDTH - MAP_OFFSET:
-            self.position.x += PLAYER_VEL
-            if self.object_collision(shelves, self.position.rect()) != []:
-                self.position.x -= PLAYER_VEL
+    def set_path(self, path, screen):
+        self.path = path
+        self.create_collision_rects(screen)
+        self.get_direction()
 
-    def move_up(self, shelves):
-        if self.position.y >= MAP_OFFSET:
-            self.position.y -= PLAYER_VEL
-            if self.object_collision(shelves, self.position.rect()) != []:
-                self.position.y += PLAYER_VEL
+    def create_collision_rects(self,screen):
+        if self.path:
+            self.collision_rects = []
+            for point in self.path:
+                x = (point.x * GRID_CELL_SIZE)
+                y = (point.y * GRID_CELL_SIZE)
+                rect = pygame.Rect((x,y),(GRID_CELL_SIZE,GRID_CELL_SIZE))
+                self.collision_rects.append(rect)
+                pygame.draw.rect(screen, BLUE, rect)
 
-    def move_down(self, shelves):
-        if self.position.y + self.position.height <= SCREEN_HEIGHT - MAP_OFFSET:
-            self.position.y += PLAYER_VEL
-            if self.object_collision(shelves, self.position.rect()) != []:
-                self.position.y -= PLAYER_VEL
+    def get_direction(self):
+        if self.collision_rects:
+            start = pygame.math.Vector2(self.pos)
+            end = pygame.math.Vector2(self.collision_rects[0].center)
+            self.direction = (end - start).normalize()
+        else:
+            self.direction = pygame.math.Vector2(0,0)
+            self.path = []
+    
+    def check_collisions(self):
+        if self.collision_rects:
+            for rect in self.collision_rects:
+                if rect.collidepoint(self.pos):
+                    del self.collision_rects[0]
+                    self.get_direction()
+        else:
+            self.path_finder.path = []
 
-    def move(self, shelves):
-
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_LEFT]:
-            self.move_left(shelves)
-        if keys[pygame.K_RIGHT]:
-            self.move_right(shelves)
-        if keys[pygame.K_UP]:
-            self.move_up(shelves)
-        if keys[pygame.K_DOWN]:
-            self.move_down(shelves)
-
-    def object_collision(self, objects, rect):
-        collisions = []
-        for object in objects:
-            if object.interface.rect().colliderect(rect):
-                collisions.append(object)
-        return collisions
+    def move(self):
+        self.pos += self.direction * self.speed
+        self.check_collisions()
+        self.position.x = self.pos[0] - PLAYER_WIDTH/2
+        self.position.y = self.pos[1] - PLAYER_HEIGHT/2
+    
+    def get_coord(self):
+        col = self.position.rect().centerx // GRID_CELL_SIZE
+        row = self.position.rect().centery // GRID_CELL_SIZE
+        return (col,row)
 
     def draw(self, screen):
         pygame.draw.rect(screen, RED, (self.position.x, self.position.y, self.position.width, self.position.height))

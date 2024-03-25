@@ -21,12 +21,12 @@ class Shelf:
     def cost(self):
         return self.price
 
-    def remove_product(self):
+    def remove_product(self, amount):
 
-        if not self.empty():
-            self.amount -= 1
-
-        if self.empty():
+        if amount < self.amount:
+            self.amount -= amount
+        else:
+            self.amount = 0
             self.product = None
 
     def add_product(self, prod):

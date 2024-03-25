@@ -2,10 +2,9 @@ import random
 
 class Supermarket:
 
-    def __init__(self, stock, customers=[], money=100):
+    def __init__(self, stock, money=100):
         self.stock = stock
         self.money = money
-        self.customers = customers
 
     def buy_product(self, product):
 
@@ -24,11 +23,7 @@ class Supermarket:
         else:
             return False
 
-    def purchase(self):
-
-        customer = random.choice(self.customers)
-
-        purchase = customer.buy(self.stock.products)
+    def purchase(self, purchase):
 
         for product_tuple in purchase.products:
             self.sell_product(product_tuple[0], product_tuple[1])

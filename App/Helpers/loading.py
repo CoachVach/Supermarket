@@ -1,3 +1,4 @@
+from App.Classes.customer import Customer
 from ..Classes.supermarket import Supermarket
 from ..Classes.product import Product
 from ..Classes.store import Store
@@ -7,19 +8,18 @@ from ..Interfaces.Tablet.store import StoreInterface
 
 def load_market(interface_objects):
     money = 1000
-    customers = []
     stock = Stock(interface_objects=interface_objects)
     
-    market = Supermarket(stock=stock, money=money, customers=customers)
+    market = Supermarket(stock=stock, money=money)
 
     return market
 
 def load_products():
-    apple = Product("Apple",5)
-    wine = Product("Wine",16)
-    pasta = Product("Pasta",10)
-    chocolate = Product("Chocolate",8)
-    water = Product("Water",10)
+    apple = Product("Apple", 5, image="apple.png")
+    wine = Product("Wine", 16, image="wine.png")
+    pasta = Product("Pasta", 10, image="pasta.png")
+    chocolate = Product("Chocolate", 8, image="chocolate.png")
+    water = Product("Water", 10, image="water.png")
 
     return [apple, wine, pasta, chocolate, water]
 
@@ -44,6 +44,11 @@ def load_shelves():
     s3.update_position(400, 350)
 
     return [s1,s2,s3]
+
+def load_customers(matrix, supermarket):
+    c1 = Customer("Erik", matrix, supermarket)
+    customers = [c1]
+    return customers
 
 def load_interface_objects(interface_objects):
     shelves = load_shelves()

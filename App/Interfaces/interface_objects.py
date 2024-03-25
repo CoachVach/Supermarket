@@ -21,3 +21,24 @@ class InterfaceObjects:
             delete = box.draw(self.screen)
             if delete:
                 self.boxes.remove(box)
+
+    def shelf_position(self, product):
+        for shelf in self.shelves:
+            if shelf.product == product:
+                return shelf, (shelf.interface.position.rect().centerx, shelf.interface.position.rect().centery)
+            
+        return None, None
+    
+    def products_in_shelfs(self):
+        products = []
+        for shelf in self.shelves:
+            if (shelf.product not in products) and (shelf.product != None):
+                products.append(shelf.product)
+        return products
+    
+    def get_shelf(self, point):
+        for shelf in self.shelves:
+            if shelf.interface.position.rect().collidepoint(point):
+                return shelf
+
+        return None
