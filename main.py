@@ -47,8 +47,8 @@ while running:
     if tablet:
         if store:
             store = store_interface.show(screen, button_clicked, mouse_pos, interface_objects)
+            interface_objects.draw_temps()
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
-            display_text(screen, f"${store_interface.supermarket}", BLACK, (20,70))
         else:
             store, tablet, editor = tablet_interface(screen, button_clicked, mouse_pos, interface_objects)
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
@@ -62,6 +62,7 @@ while running:
             if not editor:
                 for customer in customers:
                     customer.path_finder.update_matrix(matrix)
+                player.path_finder.update_matrix(matrix)
 
         else:
             screen.fill(WHITE) ###################################################
@@ -88,7 +89,7 @@ while running:
                 for customer in customers:
                     customer.in_store = True
 
-            display_text(screen, f"${store_interface.supermarket.money}", WHITE, (20,20))
+            display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
 
     pygame.display.flip()
 

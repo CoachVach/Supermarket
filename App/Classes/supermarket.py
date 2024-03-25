@@ -1,5 +1,9 @@
 import random
 
+from App.Helpers.Constants.interface import *
+from App.Helpers.interface_tools import *
+from App.Interfaces.Messages.temp_message import TempMessage
+
 class Supermarket:
 
     def __init__(self, stock, money=100):
@@ -11,9 +15,9 @@ class Supermarket:
         if self.can_buy(product):
             self.money -= product.cost()
             self.stock.add_product(product, product.selection)
-            return True
+            return True, TempMessage(f"-${product.cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
         else:
-            return False
+            return False, None
 
     def sell_product(self, product, amount):
 
@@ -27,6 +31,8 @@ class Supermarket:
 
         for product_tuple in purchase.products:
             self.sell_product(product_tuple[0], product_tuple[1])
+    
+        return TempMessage(f"+${purchase.total_cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), GREEN)
 
     def can_buy(self, product):
         return self.money >= product.cost()

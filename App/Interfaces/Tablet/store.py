@@ -16,7 +16,7 @@ class StoreInterface:
         i = 0
         for product in self.store.products:
 
-            draw_product(product, screen, button_clicked, mouse_pos, i, self)
+            draw_product(product, screen, button_clicked, mouse_pos, i, self, interface_objects)
 
             i += 1
 
@@ -25,4 +25,4 @@ class StoreInterface:
         return not exit_store
 
     def buy_product(self, product):
-        self.supermarket.buy_product(product)
+        return self.supermarket.buy_product(product)

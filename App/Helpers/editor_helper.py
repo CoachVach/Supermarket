@@ -1,6 +1,7 @@
 import pygame
 
 from App.Helpers.matrix_creation_helper import create_matrix
+from App.Interfaces.Messages.temp_message import TempMessage
 
 from ..Helpers.Constants.interface import *
 from ..Classes.shelf import *
@@ -27,6 +28,7 @@ def editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_in
                 editing_shelf.editing = True
 
                 store_interface.supermarket.money -= new_shelf.cost()
+                interface_objects.temp_message = TempMessage(f"-${new_shelf.cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
 
         else:
             if button_clicked:

@@ -13,6 +13,8 @@ class InterfaceObjects:
 
         self.exit_button = ExitButton(screen)
 
+        self.temp_message = None
+
     def draw(self, mouse_pos, button_clicked):
         for shelf in self.shelves:
             shelf.draw(self.screen, mouse_pos, button_clicked)
@@ -21,6 +23,13 @@ class InterfaceObjects:
             delete = box.draw(self.screen)
             if delete:
                 self.boxes.remove(box)
+
+        self.draw_temps()
+
+    def draw_temps(self):
+        if self.temp_message != None:
+            if not self.temp_message.draw(self.screen):
+                self.temp_message = None
 
     def shelf_position(self, product):
         for shelf in self.shelves:

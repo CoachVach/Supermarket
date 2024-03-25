@@ -87,7 +87,8 @@ class Customer:
             if self.purchase.more_products_allowed():
                 self.handle_purchase(screen, interface_objects)
             else:
-                self.supermarket.purchase(self.purchase)
+                interface_objects.temp_message = self.supermarket.purchase(self.purchase)
+                self.in_store = False
 
     def handle_purchase(self, screen, interface_objects):
         products = interface_objects.products_in_shelfs()

@@ -3,7 +3,7 @@ import pygame
 from App.Helpers.Constants.interface import *
 from App.Helpers.interface_tools import *
 
-def draw_product(product, screen, button_clicked, mouse_pos, i, market):
+def draw_product(product, screen, button_clicked, mouse_pos, i, market, interface_objects):
     x, y = product_position(i)
 
     rect = pygame.Rect(x, y, PRODUCT_WIDTH, PRODUCT_HEIGHT)
@@ -29,7 +29,7 @@ def draw_product(product, screen, button_clicked, mouse_pos, i, market):
             
     elif rect.collidepoint(mouse_pos):
         if button_clicked:
-            market.buy_product(product)
+            _,interface_objects.temp_message = market.buy_product(product)
             
         if can_buy:
             color = GREEN
