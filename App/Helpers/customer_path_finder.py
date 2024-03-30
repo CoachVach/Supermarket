@@ -4,7 +4,7 @@ from pathfinding.core.grid import Grid
 
 class CustomerPathfinder(Pathfinder):
 
-    def create_path(self, point, screen, interface_objects):
+    def create_path_shelf(self, point, screen, interface_objects):
 
         previous_matrix = self.matrix
         self.matrix = self.normalized_matrix(point, interface_objects)

@@ -2,10 +2,12 @@ from .Buttons.add_shelf import *
 from .Buttons.exit_button import *
 
 class InterfaceObjects:
-    def __init__(self, screen, shelves=[], boxes=[]):
+    def __init__(self, screen, shelves=[], boxes=[], cash_register=None):
         self.screen = screen
 
         self.shelves = shelves
+
+        self.cash_register = cash_register
         
         self.add_shelf_button = AddShelfButton(screen)
 
@@ -23,6 +25,8 @@ class InterfaceObjects:
             delete = box.draw(self.screen)
             if delete:
                 self.boxes.remove(box)
+
+        self.cash_register.draw(self.screen)
 
         self.draw_temps()
 

@@ -10,11 +10,15 @@ class Supermarket:
         self.stock = stock
         self.money = money
 
+        self.sound = "Sounds/sell.mp3"
+
     def buy_product(self, product):
 
         if self.can_buy(product):
             self.money -= product.cost()
             self.stock.add_product(product, product.selection)
+            pygame.mixer.music.load(self.sound)
+            pygame.mixer.music.play()
             return True, TempMessage(f"-${product.cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
         else:
             return False, None

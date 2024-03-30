@@ -5,6 +5,7 @@ from App.Classes.box import Box
 from App.Classes.player import Player
 
 from App.Helpers.Constants.interface import *
+from App.Helpers.customer_helper import random_customer
 from App.Helpers.interface_tools import *
 from App.Helpers.editor_helper import *
 from App.Helpers.loading import *
@@ -28,7 +29,9 @@ customers = load_customers(matrix, store_interface.supermarket)
 tablet = True
 store = False
 editor = False
-editing_shelf = None
+editing_shelf = None 
+
+elapsed_time = 0
 
 running = True
 while running:
@@ -66,6 +69,14 @@ while running:
 
         else:
             screen.fill(WHITE) ###################################################
+
+            if elapsed_time == 0:
+                start_time = pygame.time.get_ticks() 
+
+            elapsed_time = ((pygame.time.get_ticks() - start_time) // 1000) + 1
+            if elapsed_time >= 10:
+                random_customer(customers, interface_objects)
+                elapsed_time = 0
             
             if button_clicked:
                 player.path_finder.create_path((mouse_pos[0], mouse_pos[1]), screen)
@@ -85,9 +96,8 @@ while running:
                 player.get_product(interface_objects.boxes)
             elif keys[pygame.K_b] and player.carrying_product != None:
                 player.re_stock(interface_objects.shelves)
-            elif keys[pygame.K_v]:
-                for customer in customers:
-                    customer.in_store = True
+            elif keys[pygame.K_c]:
+                player.cash_register(customers, interface_objects, screen)
 
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
 

@@ -1,3 +1,4 @@
+from App.Classes.cash_register import CashRegister
 from App.Classes.customer import Customer
 from ..Classes.supermarket import Supermarket
 from ..Classes.product import Product
@@ -45,14 +46,22 @@ def load_shelves():
 
     return [s1,s2,s3]
 
+def load_cash_register():
+    return CashRegister()
+
 def load_customers(matrix, supermarket):
     c1 = Customer("Erik", matrix, supermarket)
-    customers = [c1]
+    c2 = Customer("Robert", matrix, supermarket)
+    c3 = Customer("Maria", matrix, supermarket)
+    customers = [c1, c2, c3]
     return customers
 
 def load_interface_objects(interface_objects):
+    cash_register = load_cash_register()
+
     shelves = load_shelves()
 
     interface_objects.shelves = shelves
+    interface_objects.cash_register = cash_register
 
     return interface_objects

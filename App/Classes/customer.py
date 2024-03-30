@@ -21,12 +21,28 @@ class Customer:
         self.path_finder = CustomerPathfinder(matrix, self)
 
         self.in_store = False
+        self.waiting_cashier = False
 
         self.choosen_product = None
         self.choosen_shelf = None
         self.choosen_amount = 0
 
         self.speed = CUSTOMER_VEL
+        self.pos = self.interface.position.rect().center
+        self.direction = pygame.math.Vector2(0,0)
+        self.path = []
+        self.collision_rects = []
+        self.empty_path = []
+
+    def re_start(self):
+        self.purchase = Purchase()
+
+        self.in_store = False
+        self.waiting_cashier = False
+
+        self.choosen_product = None
+        self.choosen_shelf = None
+        self.choosen_amount = 0
         self.pos = self.interface.position.rect().center
         self.direction = pygame.math.Vector2(0,0)
         self.path = []
@@ -78,19 +94,52 @@ class Customer:
             self.path_finder.path = []
 
     def move(self, screen, interface_objects):
-        self.pos += self.direction * self.speed
-        self.check_collisions()
-        self.interface.position.x = self.pos[0] - CUSTOMER_WIDTH/2
-        self.interface.position.y = self.pos[1] - CUSTOMER_HEIGHT/2
+        if not self.waiting_cashier:
+            self.pos += self.direction * self.speed
+            self.check_collisions()
+            self.interface.position.x = self.pos[0] - CUSTOMER_WIDTH/2
+            self.interface.position.y = self.pos[1] - CUSTOMER_HEIGHT/2
 
-        if self.in_store:
-            if self.purchase.more_products_allowed():
-                self.handle_purchase(screen, interface_objects)
-            else:
-                interface_objects.temp_message = self.supermarket.purchase(self.purchase)
-                self.in_store = False
+            if self.in_store:
+                if self.purchase.more_products_allowed():
+                    self.handle_purchase(screen, interface_objects)
+                else:
+                    self.in_store = False
+                    cash_register_pos = (interface_objects.cash_register.interface.position.x, interface_objects.cash_register.interface.position.y)
+                    self.path_finder.create_path(cash_register_pos, screen)
 
+            elif self.interface.position.rect().colliderect(interface_objects.cash_register.interface.position.rect()) and self.purchase != None:
+                self.waiting_cashier = True
+
+    def buy_purchase(self, interface_objects, screen):
+        interface_objects.temp_message = self.supermarket.purchase(self.purchase)
+        self.purchase = None
+        leaving_pos = (LEAVING_X, LEAVING_Y)
+        self.path_finder.create_path(leaving_pos, screen)
+        self.waiting_cashier = False
+            
     def handle_purchase(self, screen, interface_objects):
+        products = self.get_buyable_products(interface_objects)
+
+        if products != []:
+            if self.choosen_product == None:
+                self.choosen_product, self.choosen_amount = self.choose_product(products)
+
+                self.choosen_shelf, shelf_position = interface_objects.shelf_position(self.choosen_product)
+
+                self.path_finder.create_path_shelf(shelf_position, screen, interface_objects)
+
+            elif self.interface.position.rect().colliderect(self.choosen_shelf.interface.position.rect()):
+                self.add_product()
+
+                self.choosen_product, self.choosen_shelf, self.choosen_amount = None, None, 0
+
+        else:
+            self.in_store = False
+            cash_register_pos = (interface_objects.cash_register.interface.position.x, interface_objects.cash_register.interface.position.y)
+            self.path_finder.create_path(cash_register_pos, screen)
+
+    def get_buyable_products(self, interface_objects):
         products = interface_objects.products_in_shelfs()
         
         for product_tuple in self.purchase.products:
@@ -99,18 +148,7 @@ class Customer:
                     products.remove(product)
                     break
 
-        if products != []:
-            if self.choosen_product == None:
-                self.choosen_product, self.choosen_amount = self.choose_product(products)
-
-                self.choosen_shelf, shelf_position = interface_objects.shelf_position(self.choosen_product)
-
-                self.path_finder.create_path(shelf_position, screen, interface_objects)
-
-            elif self.interface.position.rect().colliderect(self.choosen_shelf.interface.position.rect()):
-                self.add_product()
-
-                self.choosen_product, self.choosen_shelf, self.choosen_amount = None, None, 0
+        return products
 
     def get_coord(self):
         col = self.interface.position.rect().centerx // GRID_CELL_SIZE

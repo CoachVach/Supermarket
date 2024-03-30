@@ -18,6 +18,8 @@ class Player:
 
         self.path_finder = Pathfinder(matrix, self)
 
+        self.image = pygame.transform.scale(pygame.image.load("Images/player.png").convert_alpha(), (self.position.width, self.position.height))
+
         self.speed = PLAYER_VEL
         self.pos = self.position.rect().center
         self.direction = pygame.math.Vector2(0,0)
@@ -84,13 +86,25 @@ class Player:
         self.position.x = self.pos[0] - PLAYER_WIDTH/2
         self.position.y = self.pos[1] - PLAYER_HEIGHT/2
     
+    def cash_register(self, customers, interface_objects, screen):
+        position_rect = self.position.rect()
+        register_rect = interface_objects.cash_register.interface.position.rect()
+        if position_rect.colliderect(register_rect):
+            for customer in customers:
+                if customer.waiting_cashier:
+                    if position_rect.colliderect(register_rect):
+                        customer.buy_purchase(interface_objects, screen)
+                        pygame.mixer.music.load(interface_objects.cash_register.sound)
+                        pygame.mixer.music.play()
+                        break
+
     def get_coord(self):
         col = self.position.rect().centerx // GRID_CELL_SIZE
         row = self.position.rect().centery // GRID_CELL_SIZE
         return (col,row)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, RED, (self.position.x, self.position.y, self.position.width, self.position.height))
+        screen.blit(self.image, (self.position.x, self.position.y))
         product_position = Position(self.position.x, self.position.y, SHELF_WIDTH / 3, SHELF_HEIGHT / 2)
         if self.carrying_product != None:
             self.carrying_product.draw(screen, product_position)

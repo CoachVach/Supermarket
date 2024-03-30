@@ -4,7 +4,7 @@ from ...Helpers.Constants.interface import *
 class ProductInterface():
 
     def __init__(self, color, image=None):
-        self.image = pygame.image.load(IMAGE_PATH + image)
+        self.image = pygame.image.load(PRODUCT_IMAGE_PATH + image)
         self.color = color
 
     def draw(self, screen, position):
