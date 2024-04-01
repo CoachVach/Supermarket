@@ -5,6 +5,7 @@ from App.Helpers.Constants.interface import *
 from App.Helpers.collision_helper import object_collision
 from App.Helpers.customer_path_finder import CustomerPathfinder
 from App.Interfaces.Map.customer import CustomerInterface
+from App.Interfaces.Messages.temp_message import TempMessage
 
 from .purchase import Purchase
 
@@ -49,10 +50,12 @@ class Customer:
         self.collision_rects = []
         self.empty_path = []
     
-    def add_product(self):
+    def add_product(self, interface_objects):
         if (self.choosen_shelf.amount >= self.choosen_amount) and (self.choosen_product == self.choosen_shelf.product):
-            self.purchase.add_product(self.choosen_product, self.choosen_amount)
-            self.choosen_shelf.remove_product(self.choosen_amount)
+            amount = self.purchase.add_product(self.choosen_product, self.choosen_amount)
+            if amount == 0:
+                interface_objects.temp_message = TempMessage("So Expensive!", (self.interface.position.x, self.interface.position.y), RED )
+            self.choosen_shelf.remove_product(amount)
 
     def choose_product(self, products):
         product = random.choice(products)
@@ -130,7 +133,7 @@ class Customer:
                 self.path_finder.create_path_shelf(shelf_position, screen, interface_objects)
 
             elif self.interface.position.rect().colliderect(self.choosen_shelf.interface.position.rect()):
-                self.add_product()
+                self.add_product(interface_objects)
 
                 self.choosen_product, self.choosen_shelf, self.choosen_amount = None, None, 0
 
