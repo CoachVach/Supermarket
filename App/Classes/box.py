@@ -4,10 +4,10 @@ from App.Interfaces.Map.box import BoxInterface
 
 class Box():
 
-    def __init__(self, product=None, amount=0):
+    def __init__(self, product=None, amount=0, x=50):
         self.product = product
         self.amount = amount
-        self.interface = BoxInterface(50, 50)
+        self.interface = BoxInterface(x)
 
     def get_product(self, capacity):
         amount = 0

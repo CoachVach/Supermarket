@@ -33,6 +33,7 @@ class Player:
         if boxes != []:
             box = boxes[0]
             self.carrying_product, self.carrying_amount = box.get_product(self.capacity)
+            self.carrying_product.in_box -= self.carrying_amount
 
     def re_stock(self, shelves):
         shelves = object_collision(shelves, self.augmented_rect())

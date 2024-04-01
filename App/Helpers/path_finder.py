@@ -22,6 +22,7 @@ class Pathfinder:
 		self.path = []
 
 	def update_matrix(self, matrix):
+		self.matrix = matrix
 		self.grid = Grid(matrix = matrix)
 
 	def draw_active_cell(self, screen, point):
@@ -57,7 +58,7 @@ class Pathfinder:
 				y = (point.y * GRID_CELL_SIZE) + GRID_CELL_SIZE//2
 				points.append((x,y))
 
-			pygame.draw.lines(screen,'#4a4a4a',False,points,5)
+			pygame.draw.lines(screen,'#4a4a4a',False,points,2)
 
 	def update(self, screen, point):
 		self.draw_active_cell(screen, point)

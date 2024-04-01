@@ -19,7 +19,8 @@ class Supermarket:
             self.stock.add_product(product, product.selection)
             pygame.mixer.music.load(self.sound)
             pygame.mixer.music.play()
-            return True, TempMessage(f"-${product.cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
+            cost = "{:.2f}".format(product.cost())
+            return True, TempMessage(f"-${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
         else:
             return False, None
 
@@ -35,8 +36,10 @@ class Supermarket:
 
         for product_tuple in purchase.products:
             self.sell_product(product_tuple[0], product_tuple[1])
+        
+        cost = "{:.2f}".format(purchase.total_cost())
     
-        return TempMessage(f"+${purchase.total_cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), GREEN)
+        return TempMessage(f"+${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), GREEN)
 
     def can_buy(self, product):
         return self.money >= product.cost()

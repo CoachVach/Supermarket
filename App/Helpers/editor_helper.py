@@ -30,7 +30,10 @@ def editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_in
                 store_interface.supermarket.money -= new_shelf.cost()
                 pygame.mixer.music.load(store_interface.supermarket.sound)
                 pygame.mixer.music.play()
-                interface_objects.temp_message = TempMessage(f"-${new_shelf.cost()}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
+
+                cost = "{:.2f}".format(new_shelf.cost())
+
+                interface_objects.temp_message = TempMessage(f"-${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
 
         else:
             if button_clicked:

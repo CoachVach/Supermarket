@@ -1,7 +1,6 @@
 import pygame
 import random
 
-from App.Classes.box import Box
 from App.Classes.player import Player
 
 from App.Helpers.Constants.interface import *
@@ -9,6 +8,7 @@ from App.Helpers.customer_helper import random_customer
 from App.Helpers.interface_tools import *
 from App.Helpers.editor_helper import *
 from App.Helpers.loading import *
+from App.Interfaces.Tablet.stock import StockInterface
 from App.Interfaces.Tablet.store import *
 from App.Interfaces.interface_objects import *
 from App.Interfaces.Tablet.desktop import *
@@ -25,9 +25,11 @@ interface_objects = load_interface_objects(interface_objects)
 matrix = create_matrix(interface_objects.shelves)
 player = Player(matrix)
 customers = load_customers(matrix, store_interface.supermarket)
+stock_interface = StockInterface(store_interface.supermarket.stock)
 
 tablet = True
 store = False
+stock = False
 editor = False
 editing_shelf = None 
 
@@ -52,8 +54,11 @@ while running:
             store = store_interface.show(screen, button_clicked, mouse_pos, interface_objects)
             interface_objects.draw_temps()
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
+        elif stock:
+            stock = stock_interface.show(screen, button_clicked, mouse_pos)
+            display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
         else:
-            store, tablet, editor = tablet_interface(screen, button_clicked, mouse_pos, interface_objects)
+            store, tablet, editor, stock = tablet_interface(screen, button_clicked, mouse_pos, interface_objects)
             display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
             if editor: 
                 shelves_editor_mode(interface_objects.shelves, editor)
@@ -99,7 +104,9 @@ while running:
             elif keys[pygame.K_c]:
                 player.cash_register(customers, interface_objects, screen)
 
-            display_text(screen, f"${store_interface.supermarket.money}", BLACK, (20,20))
+            money = "{:.2f}".format(store_interface.supermarket.money)
+
+            display_text(screen, f"${money}", BLACK, (20,20))
 
     pygame.display.flip()
 

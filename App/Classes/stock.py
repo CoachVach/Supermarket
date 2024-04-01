@@ -1,4 +1,5 @@
 from App.Classes.box import Box
+from App.Helpers.Constants.interface import BOX_WIDTH
 
 class Stock:
     
@@ -15,7 +16,8 @@ class Stock:
         if box != None:
             box.amount += amount
         else:
-            self.interface_objects.boxes.append(Box(product, amount))
+            box_x = 50 + BOX_WIDTH*len(self.interface_objects.boxes)
+            self.interface_objects.boxes.append(Box(product, amount, box_x))
 
     def remove_product(self, product, amount):
         product.remove_stock(amount)
