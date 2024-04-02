@@ -8,12 +8,9 @@ from App.Helpers.Constants.interface import GRID_CELL_SIZE, RED
 
 class Pathfinder:
 	def __init__(self, matrix, customer):
-
-		# setup
 		self.matrix = matrix
 		self.grid = Grid(matrix = matrix)
 
-		# pathfinding
 		self.path = []
 
 		self.customer = customer

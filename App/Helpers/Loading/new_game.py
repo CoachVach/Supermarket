@@ -1,11 +1,26 @@
 from App.Classes.cash_register import CashRegister
 from App.Classes.customer import Customer
-from ..Classes.supermarket import Supermarket
-from ..Classes.product import Product
-from ..Classes.store import Store
-from ..Classes.shelf import Shelf
-from ..Classes.stock import Stock
-from ..Interfaces.Tablet.store import StoreInterface
+from App.Classes.player import Player
+from App.Helpers.matrix_creation_helper import create_matrix
+from App.Interfaces.Tablet.stock import StockInterface
+from App.Interfaces.interface_objects import InterfaceObjects
+from ...Classes.supermarket import Supermarket
+from ...Classes.product import Product
+from ...Classes.store import Store
+from ...Classes.shelf import Shelf
+from ...Classes.stock import Stock
+from ...Interfaces.Tablet.store import StoreInterface
+
+def load_new_game(screen):
+    interface_objects = InterfaceObjects(screen)
+    store_interface = load_store_interface(interface_objects)
+    interface_objects = load_interface_objects(interface_objects)
+    matrix = create_matrix(interface_objects.shelves)
+    player = Player(matrix)
+    customers = load_customers(matrix, store_interface.supermarket)
+    stock_interface = StockInterface(store_interface.supermarket.stock)
+    
+    return interface_objects, store_interface, matrix, player, customers, stock_interface
 
 def load_market(interface_objects):
     money = 1000

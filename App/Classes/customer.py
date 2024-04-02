@@ -3,7 +3,7 @@ import pygame, random
 from App.Helpers.Constants.logic import CUSTOMER_VEL
 from App.Helpers.Constants.interface import *
 from App.Helpers.collision_helper import object_collision
-from App.Helpers.customer_path_finder import CustomerPathfinder
+from App.Helpers.Path_Finders.customer_path_finder import CustomerPathfinder
 from App.Interfaces.Map.customer import CustomerInterface
 from App.Interfaces.Messages.temp_message import TempMessage
 

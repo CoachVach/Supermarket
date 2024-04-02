@@ -5,7 +5,7 @@ from ...Classes.position import *
 from ...Helpers.interface_tools import *
 
 class Button:
-    def __init__(self, screen, x=0, y=0, width=10, height=10, color=GRAY, hover_color=WHITE, text="", text_color=BLACK):
+    def __init__(self, screen, x=0, y=0, width=10, height=10, color=GRAY, hover_color=WHITE, text="", text_color=BLACK, font_size=36):
         self.screen = screen
 
         self.position = Position(x, y, width, height)
@@ -15,6 +15,8 @@ class Button:
         self.hover_color = hover_color
 
         self.text = text
+
+        self.font_size = font_size
 
         self.text_color = text_color
 
@@ -29,7 +31,7 @@ class Button:
 
         pygame.draw.rect(self.screen, color, self.rect())
 
-        display_text(self.screen, self.text, self.text_color, (self.position.x + TEXT_OFFSET, self.position.y + TEXT_OFFSET))
+        display_custom_text(self.screen, self.text, self.font_size, self.text_color, (self.position.x + TEXT_OFFSET, self.position.y + TEXT_OFFSET))
 
     def rect(self):
         return pygame.Rect(self.position.x, self.position.y, self.position.width, self.position.height) 

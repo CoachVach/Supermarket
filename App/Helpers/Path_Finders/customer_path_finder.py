@@ -1,4 +1,4 @@
-from App.Helpers.path_finder import Pathfinder
+from App.Helpers.Path_Finders.path_finder import Pathfinder
 from pathfinding.core.grid import Grid
 
 

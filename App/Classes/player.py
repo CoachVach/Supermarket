@@ -1,7 +1,7 @@
 import pygame
 
 from App.Helpers.collision_helper import object_collision
-from App.Helpers.path_finder import Pathfinder
+from App.Helpers.Path_Finders.path_finder import Pathfinder
 from .position import Position
 
 from ..Helpers.Constants.logic import *
