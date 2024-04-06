@@ -13,7 +13,6 @@ class Customer:
 
     def __init__(self, name, matrix, supermarket, money=0):
         self.name = name
-        self.money = money
         self.supermarket = supermarket
         self.interface = CustomerInterface()
 
@@ -162,4 +161,4 @@ class Customer:
         self.interface.draw(screen)
 
     def __str__(self):
-        return f"Customer: Name = {self.name}, Money = {self.money}"
+        return f"Customer: Name = {self.name}"

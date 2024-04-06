@@ -41,6 +41,12 @@ class Stock:
         
         return None
 
+    def data(self):
+        products = []
+        for product in self.products:
+            products.append((product.name, product.price))
+        return products
+    
     def __str__(self):
         string = ""
         for product in self.products:

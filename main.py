@@ -46,7 +46,7 @@ while running:
         if tablet and new_game:
             interface_objects, store_interface, matrix, player, customers, stock_interface = load_new_game(screen)
         elif save:
-            save_db(interface_objects, store_interface, matrix, player, customers, stock_interface)
+            save_db(interface_objects, store_interface, customers, stock_interface)
     else:
         if tablet:
             if store:

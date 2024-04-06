@@ -22,8 +22,7 @@ def load_new_game(screen):
     
     return interface_objects, store_interface, matrix, player, customers, stock_interface
 
-def load_market(interface_objects):
-    money = 1000
+def load_market(interface_objects, money = 1000):
     stock = Stock(interface_objects=interface_objects)
     
     market = Supermarket(stock=stock, money=money)
