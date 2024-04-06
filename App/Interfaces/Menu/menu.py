@@ -39,4 +39,4 @@ class Menu:
         elif settings:
             pass
         
-        return tablet
+        return tablet, new_game, save

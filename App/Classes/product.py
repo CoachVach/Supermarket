@@ -2,7 +2,7 @@ from ..Interfaces.Map.product import ProductInterface
 from ..Helpers.Constants.interface import *
 
 class Product:
-    def __init__(self, name, sell_price, color=BLUE, image="", selection=5):
+    def __init__(self, name, sell_price, image="", selection=5):
         self.name = name
         self.price = sell_price
         self.sell_price = sell_price
@@ -10,7 +10,7 @@ class Product:
         self.stock = 0
         self.in_box = 0
         self.selection = selection
-        self.interface = ProductInterface(color, image)
+        self.interface = ProductInterface(image)
 
     def set_price(self, amount):
         self.price = amount

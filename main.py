@@ -1,15 +1,14 @@
 import pygame
-import random
 
 from App.Classes.player import Player
 
 from App.Helpers.Constants.interface import *
+from App.Helpers.Loading.saving import save_db
 from App.Helpers.customer_helper import random_customer
 from App.Helpers.interface_tools import *
 from App.Helpers.editor_helper import *
 from App.Helpers.Loading.new_game import *
 from App.Interfaces.Menu.menu import Menu
-from App.Interfaces.Tablet.stock import StockInterface
 from App.Interfaces.Tablet.store import *
 from App.Interfaces.interface_objects import *
 from App.Interfaces.Tablet.desktop import *
@@ -43,9 +42,11 @@ while running:
     keys = pygame.key.get_pressed()
 
     if menu.display:
-        tablet = menu.draw(mouse_pos, button_clicked)
-        if tablet:
+        tablet, new_game, save = menu.draw(mouse_pos, button_clicked)
+        if tablet and new_game:
             interface_objects, store_interface, matrix, player, customers, stock_interface = load_new_game(screen)
+        elif save:
+            save_db(interface_objects, store_interface, matrix, player, customers, stock_interface)
     else:
         if tablet:
             if store:
@@ -101,6 +102,9 @@ while running:
                     player.re_stock(interface_objects.shelves)
                 elif keys[pygame.K_c]:
                     player.cash_register(customers, interface_objects, screen)
+                elif keys[pygame.K_ESCAPE]:
+                    menu.display = True
+                    store, tablet, editor = False, False, False
 
                 money = "{:.2f}".format(store_interface.supermarket.money)
 
