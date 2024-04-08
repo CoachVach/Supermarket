@@ -10,6 +10,8 @@ class Product:
         self.stock = 0
         self.in_box = 0
         self.selection = selection
+
+        self.image = image
         self.interface = ProductInterface(image)
 
     def set_price(self, amount):

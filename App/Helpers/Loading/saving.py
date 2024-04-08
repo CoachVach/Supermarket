@@ -25,22 +25,14 @@ def save_products(conn, cursor, store_interface):
                         sell_price REAL,
                         market_price REAL,
                         stock INTEGER,
-                        in_box INTEGER
+                        in_box INTEGER, 
+                        image TEXT NOT NULL
                     )''')
     products_data = store_interface.store.products_data()
 
-    cursor.executemany('''INSERT OR IGNORE INTO products (name, price, sell_price, market_price, stock, in_box) 
-                            VALUES (?, ?, ?, ?, ?, ?)''', products_data)
+    cursor.executemany('''INSERT OR IGNORE INTO products (name, price, sell_price, market_price, stock, in_box, image) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)''', products_data)
     conn.commit()
-
-    """
-    cursor.execute('''SELECT * FROM products''')
-    products = cursor.fetchall()
-    print("Products in the database:")
-    for product in products:
-        print(product)
-
-    """
 
 def save_shelves(conn, cursor, inteface_objects):
     cursor.execute('''CREATE TABLE IF NOT EXISTS shelves (
@@ -99,13 +91,6 @@ def save_money(conn, cursor, store_interface):
     cursor.executemany('''INSERT OR IGNORE INTO supermarket (name, money) 
                             VALUES (?, ?)''', data)
     conn.commit()
-
-    
-    cursor.execute('''SELECT * FROM supermarket''')
-    supermarket = cursor.fetchall()
-    print("supermarket in the database:")
-    for s in supermarket:
-        print(s)
     
 def delete_all(conn, cursor):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
