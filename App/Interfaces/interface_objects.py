@@ -59,5 +59,5 @@ class InterfaceObjects:
     def shelf_data(self):
         shelves = []
         for shelf in self.shelves:
-            shelves.append((shelf.product.name if shelf.product != None else "", shelf.amount, shelf.capacity, shelf.price, shelf.interface.position.y, shelf.interface.position.y))
+            shelves.append((shelf.product.name if shelf.product != None else "", shelf.amount, shelf.capacity, shelf.price, shelf.interface.position.x, shelf.interface.position.y))
         return shelves

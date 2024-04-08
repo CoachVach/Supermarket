@@ -29,14 +29,12 @@ class Menu:
         load = self.load.draw(mouse_pos, button_clicked)
         settings = self.settings.draw(mouse_pos, button_clicked)
         
-        if new_game: 
+        if new_game or load: 
             self.display = False
             tablet = True
         elif save:
             pass
-        elif load:
-            pass
         elif settings:
             pass
         
-        return tablet, new_game, save
+        return tablet, new_game, save, load

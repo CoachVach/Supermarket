@@ -9,3 +9,9 @@ class Store:
             products.append((product.name, product.price, product.sell_price, product.market_price, product.stock, product.in_box))
 
         return products
+    
+    def get_product(self, name):
+        for p in self.products:
+            if p.name == name:
+                return p
+        return None

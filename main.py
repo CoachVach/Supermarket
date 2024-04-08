@@ -3,6 +3,7 @@ import pygame
 from App.Classes.player import Player
 
 from App.Helpers.Constants.interface import *
+from App.Helpers.Loading.prev_game import load_db
 from App.Helpers.Loading.saving import save_db
 from App.Helpers.customer_helper import random_customer
 from App.Helpers.interface_tools import *
@@ -42,11 +43,13 @@ while running:
     keys = pygame.key.get_pressed()
 
     if menu.display:
-        tablet, new_game, save = menu.draw(mouse_pos, button_clicked)
+        tablet, new_game, save, load = menu.draw(mouse_pos, button_clicked)
         if tablet and new_game:
             interface_objects, store_interface, matrix, player, customers, stock_interface = load_new_game(screen)
         elif save:
             save_db(interface_objects, store_interface, customers, stock_interface)
+        elif load:
+            interface_objects, store_interface, matrix, player, customers, stock_interface = load_db(screen)
     else:
         if tablet:
             if store:
