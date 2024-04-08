@@ -50,12 +50,6 @@ def save_shelves(conn, cursor, inteface_objects):
                             VALUES (?, ?, ?, ?, ?, ?)''', data)
     conn.commit()
 
-    cursor.execute('''SELECT * FROM shelves''')
-    shelves = cursor.fetchall()
-    print("Shelves in the database:")
-    for shelf in shelves:
-        print(shelf)
-
 def save_stock(conn, cursor, stock_interface):
     cursor.execute('''CREATE TABLE IF NOT EXISTS stock (
                         id INTEGER PRIMARY KEY,
@@ -69,14 +63,6 @@ def save_stock(conn, cursor, stock_interface):
     cursor.executemany('''INSERT OR IGNORE INTO stock (product, price) 
                             VALUES (?, ?)''', data)
     conn.commit()
-
-    """
-    cursor.execute('''SELECT * FROM stock''')
-    stock = cursor.fetchall()
-    print("Stock in the database:")
-    for s in stock:
-        print(s)
-    """
 
 def save_money(conn, cursor, store_interface):
     cursor.execute('''CREATE TABLE IF NOT EXISTS supermarket (
@@ -96,10 +82,8 @@ def delete_all(conn, cursor):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = cursor.fetchall()
 
-    # Empty each table
     for table in tables:
         table_name = table[0]
         cursor.execute(f"DELETE FROM {table_name};")  # or "TRUNCATE TABLE {table_name};"
 
-    # Commit the changes
     conn.commit()
