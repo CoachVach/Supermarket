@@ -2,6 +2,7 @@ import pygame
 
 from App.Classes.player import Player
 
+from App.Classes.report import DayReport
 from App.Helpers.Constants.interface import *
 from App.Helpers.Loading.prev_game import load_db
 from App.Helpers.Loading.saving import save_db
@@ -24,20 +25,30 @@ tablet = False
 store = False
 stock = False
 editor = False
+reporting = False
+space = False
 editing_shelf = None 
 
 elapsed_time = 0
+open = False
+opened_time = 0
+displayed_time = 0
 
 running = True
 while running:
     screen.fill(WHITE) ###################################################
     button_clicked = False
+    key_released = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # Left click
+            if event.button == 1:  
                 button_clicked = True
+        elif event.type == pygame.KEYUP:
+            key_released = True
+        elif event.type == pygame.KEYDOWN:
+            space = event.key == pygame.K_SPACE
 
     mouse_pos = pygame.mouse.get_pos()
     keys = pygame.key.get_pressed()
@@ -75,15 +86,7 @@ while running:
                     player.path_finder.update_matrix(matrix)
 
             else:
-                screen.fill(WHITE) ###################################################
-
-                if elapsed_time == 0:
-                    start_time = pygame.time.get_ticks() 
-
-                elapsed_time = ((pygame.time.get_ticks() - start_time) // 1000) + 1
-                if elapsed_time >= 10:
-                    random_customer(customers, interface_objects)
-                    elapsed_time = 0
+                screen.fill(BLACK) ###################################################
                 
                 if button_clicked:
                     player.path_finder.create_path((mouse_pos[0], mouse_pos[1]), screen)
@@ -97,21 +100,59 @@ while running:
     
                 player.draw(screen)
 
-                if keys[pygame.K_m]:
-                    tablet = True
-                elif keys[pygame.K_n] and player.carrying_product == None:
-                    player.get_product(interface_objects.boxes)
-                elif keys[pygame.K_b] and player.carrying_product != None:
-                    player.re_stock(interface_objects.shelves)
-                elif keys[pygame.K_c]:
-                    player.cash_register(customers, interface_objects, screen)
-                elif keys[pygame.K_ESCAPE]:
-                    menu.display = True
-                    store, tablet, editor = False, False, False
+                if open:
+                    if elapsed_time == 0:
+                        start_time = pygame.time.get_ticks() 
+
+                    if opened_time == 0:
+                        open_time = pygame.time.get_ticks() 
+
+                    opened_time = ((pygame.time.get_ticks() - open_time) // 1000) + 1   
+                    elapsed_time = ((pygame.time.get_ticks() - start_time) // 1000) + 1
+                    if elapsed_time >= 10:
+                        random_customer(customers, interface_objects)
+                        elapsed_time = 0
+
+                    hour = 8 + opened_time//6
+                    minute = opened_time % 6
+                    minute = f"{minute}0"
+
+                    display_text(screen, f"{hour}:{minute}", WHITE, (SCREEN_WIDTH - 75, 0))
+
+                    if opened_time == CLOSING_TIME:
+                        reporting = True
+                        report = DayReport(50, 30)
+                        open = False
+                        opened_time, elapsed_time = 0,0
+                else:
+                    if displayed_time == 0:
+                        start_time = pygame.time.get_ticks() 
+
+                    displayed_time = ((pygame.time.get_ticks() - start_time) // 1000) + 1
+                    if (displayed_time % 2) == 0:
+                        display_text(screen, "SPACE TO OPEN", WHITE, (300, 300))
+
+                if reporting:
+                    reporting = report.draw(screen, space and key_released)
+                else:
+                    if keys[pygame.K_m]: 
+                        tablet = True
+                    elif keys[pygame.K_n] and player.carrying_product == None:
+                        player.get_product(interface_objects.boxes)
+                    elif keys[pygame.K_b] and player.carrying_product != None:
+                        player.re_stock(interface_objects.shelves)
+                    elif keys[pygame.K_c]:
+                        player.cash_register(customers, interface_objects, screen)
+                    elif space and key_released and open == False:
+                        open = True
+                        spae = False
+                    elif keys[pygame.K_ESCAPE]:
+                        menu.display = True
+                        store, tablet, editor = False, False, False
 
                 money = "{:.2f}".format(store_interface.supermarket.money)
 
-                display_text(screen, f"${money}", BLACK, (20,20))
+                display_text(screen, f"${money}", WHITE, (20,20))
 
     pygame.display.flip()
 
