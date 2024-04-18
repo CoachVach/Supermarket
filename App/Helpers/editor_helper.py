@@ -6,7 +6,7 @@ from App.Interfaces.Messages.temp_message import TempMessage
 from ..Helpers.Constants.interface import *
 from ..Classes.shelf import *
 
-def editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf, matrix):
+def editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf, matrix, report):
 
     shelves = interface_objects.shelves
     editor = True
@@ -32,7 +32,8 @@ def editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_in
                 pygame.mixer.music.play()
 
                 cost = "{:.2f}".format(new_shelf.cost())
-
+                report.buys += new_shelf.cost()
+                
                 interface_objects.temp_message = TempMessage(f"-${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
 
         else:

@@ -1,7 +1,8 @@
 class Store:
 
-    def __init__(self, products=[]):
+    def __init__(self, products=[], report=None):
         self.products = products
+        self.report = report
 
     def products_data(self):
         products = []

@@ -6,9 +6,10 @@ from App.Interfaces.Messages.temp_message import TempMessage
 
 class Supermarket:
 
-    def __init__(self, stock, money=100):
+    def __init__(self, stock, report, money=100):
         self.stock = stock
         self.money = money
+        self.report = report
 
         self.sound = "Sounds/sell.mp3"
 
@@ -20,6 +21,7 @@ class Supermarket:
             pygame.mixer.music.load(self.sound)
             pygame.mixer.music.play()
             cost = "{:.2f}".format(product.cost())
+            self.report.buys += product.cost()
             return True, TempMessage(f"-${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), RED)
         else:
             return False, None
@@ -38,6 +40,9 @@ class Supermarket:
             self.sell_product(product_tuple[0], product_tuple[1])
         
         cost = "{:.2f}".format(purchase.total_cost())
+        self.report.sells += purchase.total_cost()
+
+        print(self.report.sells)
     
         return TempMessage(f"+${cost}", (TEMP_MONEY_MESSAGE_X, TEMP_MONEY_MESSAGE_Y), GREEN)
 

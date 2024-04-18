@@ -11,9 +11,9 @@ from ...Classes.shelf import Shelf
 from ...Classes.stock import Stock
 from ...Interfaces.Tablet.store import StoreInterface
 
-def load_new_game(screen):
+def load_new_game(screen, report):
     interface_objects = InterfaceObjects(screen)
-    store_interface = load_store_interface(interface_objects)
+    store_interface = load_store_interface(interface_objects, report)
     interface_objects = load_interface_objects(interface_objects)
     matrix = create_matrix(interface_objects.shelves)
     player = Player(matrix)
@@ -22,10 +22,10 @@ def load_new_game(screen):
     
     return interface_objects, store_interface, matrix, player, customers, stock_interface
 
-def load_market(interface_objects, money = 1000):
+def load_market(interface_objects, report, money = 1000):
     stock = Stock(interface_objects=interface_objects)
     
-    market = Supermarket(stock=stock, money=money)
+    market = Supermarket(stock=stock, money=money, report=report)
 
     return market
 
@@ -38,16 +38,16 @@ def load_products():
 
     return [apple, wine, pasta, chocolate, water]
 
-def load_store():
+def load_store(report):
     products = load_products()
 
-    store = Store(products)
+    store = Store(products, report)
 
     return store
 
-def load_store_interface(interface_objects):
-    store = load_store()
-    market = load_market(interface_objects)
+def load_store_interface(interface_objects, report):
+    store = load_store(report)
+    market = load_market(interface_objects, report)
 
     return StoreInterface(store,market)
 

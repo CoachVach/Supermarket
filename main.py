@@ -21,6 +21,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(GAME_TITLE)
 
 menu = Menu(screen)
+report = DayReport(0, 0)
 tablet = False
 store = False
 stock = False
@@ -56,7 +57,7 @@ while running:
     if menu.display:
         tablet, new_game, save, load = menu.draw(mouse_pos, button_clicked)
         if tablet and new_game:
-            interface_objects, store_interface, matrix, player, customers, stock_interface = load_new_game(screen)
+            interface_objects, store_interface, matrix, player, customers, stock_interface = load_new_game(screen, report)
         elif save:
             save_db(interface_objects, store_interface, customers, stock_interface)
         elif load:
@@ -79,7 +80,7 @@ while running:
         else:
             if editor:
                 interface_objects.draw(mouse_pos, button_clicked)
-                editing_shelf, interface_objects.shelves, editor, matrix = editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf, matrix)
+                editing_shelf, interface_objects.shelves, editor, matrix = editor_helper(screen, button_clicked, mouse_pos, interface_objects, store_interface, editing_shelf, matrix, report)
                 if not editor:
                     for customer in customers:
                         customer.path_finder.update_matrix(matrix)
@@ -121,7 +122,6 @@ while running:
 
                     if opened_time == CLOSING_TIME:
                         reporting = True
-                        report = DayReport(50, 30)
                         open = False
                         opened_time, elapsed_time = 0,0
                 else:
@@ -145,7 +145,7 @@ while running:
                         player.cash_register(customers, interface_objects, screen)
                     elif space and key_released and open == False:
                         open = True
-                        spae = False
+                        space = False
                     elif keys[pygame.K_ESCAPE]:
                         menu.display = True
                         store, tablet, editor = False, False, False
